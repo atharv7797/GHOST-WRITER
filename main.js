@@ -11,8 +11,8 @@
      CONFIGURATION
   ----------------------------------------------------- */
 
-  // Local FastAPI backend
-  const API_URL = "http://127.0.0.1:8000/api/analyze";
+
+  const API_URL = "https://ghost-writer-l93x.onrender.com/api/analyze";
 
 
   /* -----------------------------------------------------
