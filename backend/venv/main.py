@@ -1,10 +1,14 @@
 from fastapi import FastAPI, HTTPException
 
-from models import EmailRequest
+from models import EmailRequest, AnalysisResponse
 from ai import analyze_email
 
 
-app = FastAPI()
+app = FastAPI(
+    title="Ghost Writer API",
+    description="AI-powered email intelligence and reply generator",
+    version="1.0.0"
+)
 
 
 @app.get("/")
@@ -14,7 +18,7 @@ def home():
     }
 
 
-@app.post("/api/analyze")
+@app.post("/api/analyze", response_model=AnalysisResponse)
 def analyze(request: EmailRequest):
 
     if not request.email.strip():
@@ -24,12 +28,7 @@ def analyze(request: EmailRequest):
         )
 
     try:
-        result = analyze_email(request.email)
-
-        return {
-            "email": request.email,
-            "analysis": result
-        }
+        return analyze_email(request.email)
 
     except Exception as e:
         raise HTTPException(
