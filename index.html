@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ghost Writer — Let AI Write Your Next Move</title>
+<meta name="description" content="Paste an email. Understand the intent. Choose how you want to respond." />
+
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+  rel="stylesheet"
+>
+
+<!-- Display font: BubbledotICG-FinePos -->
+<link
+  href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+  rel="stylesheet"
+>
+
+<!-- Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ BACKGROUND ============ -->
+<div class="bg">
+  <video class="bg-video" autoplay muted loop playsinline aria-hidden="true">
+    <source
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+      type="video/mp4"
+    />
+  </video>
+  <div class="bg-overlay"></div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+
+    <a href="#top" class="brand" aria-label="Ghost Writer home">
+      <span class="brand-logo">
+        <img src="assets/logo.webp" alt="Ghost Writer logo" />
+      </span>
+    </a>
+
+    <nav class="nav-pill" aria-label="Primary">
+      <ul>
+        <li><a href="#top" class="nav-link is-active">Home<span class="active-dots" aria-hidden="true"><i></i><i></i><i></i></span></a></li>
+        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+      </ul>
+    </nav>
+
+    <a href="#app" class="btn-cta">Get Started</a>
+
+    <button
+      class="hamburger"
+      id="hamburgerBtn"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobileMenu"
+    >
+      <span class="hamburger-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="hamburger-x" aria-hidden="true">
+        <i class="fa-solid fa-xmark"></i>
+      </span>
+    </button>
+
+  </div>
+
+  <!-- Mobile menu sheet -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden>
+    <ul>
+      <li><a href="#top" class="mobile-link is-active">Home</a></li>
+      <li><a href="#how-it-works" class="mobile-link">How It Works</a></li>
+      <li><a href="#features" class="mobile-link">Features</a></li>
+      <li><a href="#about" class="mobile-link">About</a></li>
+      <li><a href="#app" class="mobile-link mobile-link--cta">Get Started</a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main id="top">
+  <section class="hero" id="app" aria-label="Ghost Writer email reply generator">
+
+    <div class="hero-inner">
+
+      <p class="trust-pill" data-reveal>
+        <span class="trust-dot" aria-hidden="true"></span>
+        AI-POWERED EMAIL INTELLIGENCE
+      </p>
+
+      <h1 class="headline">
+        <span class="headline-line" data-reveal>Your Inbox.</span>
+        <span class="headline-line" data-reveal>Your Move.</span>
+      </h1>
+
+      <p class="subhead" data-reveal>
+        Understand any email, choose your intent, and let Ghost Writer craft the perfect response.
+      </p>
+
+      <!-- ============ APP PANEL ============ -->
+      <div class="panel" id="panel" data-reveal>
+
+        <!-- ---- STAGE 1: INPUT ---- -->
+        <section class="stage stage-input" id="stageInput" aria-labelledby="inputHeading">
+          <div class="panel-head">
+            <h2 id="inputHeading">Incoming Email</h2>
+            <p class="panel-sub">Paste the email you received</p>
+          </div>
+
+          <label for="emailInput" class="sr-only">Paste the email you received</label>
+          <textarea
+            id="emailInput"
+            class="email-textarea"
+            placeholder="Paste an email here..."
+            rows="5"
+          ></textarea>
+
+          <div class="panel-foot">
+            <p class="panel-hint">
+              <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+              AI will analyze intent, tone &amp; context
+            </p>
+            <button type="button" class="btn-analyze" id="analyzeBtn">
+              <span class="btn-analyze-label">
+                <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                Analyze Email
+              </span>
+            </button>
+          </div>
+
+          <p class="form-error" id="formError" role="alert" hidden>Paste an email before analyzing.</p>
+        </section>
+
+        <!-- ---- STAGE 2: LOADING ---- -->
+        <section class="stage stage-loading" id="stageLoading" hidden aria-live="polite">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p class="loading-text">Analyzing email...</p>
+        </section>
+
+        <!-- ---- STAGE 3: RESULTS ---- -->
+        <section class="stage stage-results" id="stageResults" hidden aria-labelledby="resultsHeading">
+
+          <button type="button" class="btn-back" id="startOverBtn">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Analyze Another Email
+          </button>
+
+          <div class="analysis-block">
+            <p class="analysis-eyebrow" id="resultsHeading">Email Analysis</p>
+
+            <dl class="analysis-grid">
+              <div class="analysis-item">
+                <dt>Intent</dt>
+                <dd id="analysisIntent">Collaboration Request</dd>
+              </div>
+              <div class="analysis-item">
+                <dt>Tone</dt>
+                <dd id="analysisTone">Professional / Friendly</dd>
+              </div>
+              <div class="analysis-item">
+                <dt>Context</dt>
+                <dd id="analysisContext">The sender is asking whether you are interested in working together.</dd>
+              </div>
+              <div class="analysis-item">
+                <dt>Requested Action</dt>
+                <dd id="analysisAction">Respond regarding the collaboration opportunity.</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="choices-head">
+            <h3>Choose Your Response</h3>
+            <p>Ghost Writer found three ways you could respond.</p>
+          </div>
+
+          <div class="choices-grid" id="choicesGrid"></div>
+
+          <div class="final-action" id="finalAction" hidden>
+            <button type="button" class="btn-final-copy" id="finalCopyBtn">
+              <i class="fa-solid fa-copy" aria-hidden="true"></i>
+              Copy Final Reply
+            </button>
+          </div>
+
+        </section>
+
+      </div>
+      <!-- /panel -->
+
+    </div>
+  </section>
+
+  <!-- ============ METRICS FOOTER ============ -->
+  <footer class="metrics" aria-label="Ghost Writer product metrics">
+    <ul class="metrics-list">
+      <li class="metric">
+        <span class="metric-symbol" aria-hidden="true">&lt;</span>
+        <span class="metric-value">3</span>
+        <span class="metric-label">Response Choices</span>
+      </li>
+      <li class="metric">
+        <span class="metric-symbol" aria-hidden="true">%</span>
+        <span class="metric-value">100</span>
+        <span class="metric-label">User Controlled</span>
+      </li>
+      <li class="metric">
+        <span class="metric-symbol" aria-hidden="true">*</span>
+        <span class="metric-value">AI</span>
+        <span class="metric-label">Context Aware</span>
+      </li>
+      <li class="metric">
+        <span class="metric-symbol" aria-hidden="true">#</span>
+        <span class="metric-value">1</span>
+        <span class="metric-label">Email In</span>
+      </li>
+    </ul>
+  </footer>
+</main>
+
+<!-- Live region for status announcements -->
+<div id="liveStatus" class="sr-only" role="status" aria-live="polite"></div>
+
+<script src="main.js"></script>
+</body>
+</html>
