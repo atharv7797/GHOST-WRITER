@@ -5,19 +5,22 @@ from openai import OpenAI
 
 load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("NVIDIA_API_KEY")
 
 if not api_key:
-    raise RuntimeError("OPENAI_API_KEY is missing from .env")
+    raise RuntimeError("NVIDIA_API_KEY is missing from .env")
 
-client = OpenAI(api_key=api_key)
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://integrate.api.nvidia.com/v1"
+)
 
 
 def analyze_email(email: str):
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=[
+    response = client.chat.completions.create(
+        model="meta/llama-3.3-70b-instruct",
+        messages=[
             {
                 "role": "system",
                 "content": """
@@ -45,7 +48,9 @@ Do not invent information that is not present in the email.
                 "role": "user",
                 "content": email
             }
-        ]
+        ],
+        temperature=0.7,
+        max_tokens=1500
     )
 
-    return response.output_text
+    return response.choices[0].message.content
