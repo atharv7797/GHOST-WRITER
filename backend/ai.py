@@ -18,15 +18,12 @@ client = OpenAI(
     base_url="https://integrate.api.nvidia.com/v1"
 )
 
-
 SYSTEM_PROMPT = """
 You are Ghost Writer, an AI email intelligence assistant.
 
-Analyze the incoming email.
+Analyze the incoming email and return ONLY valid JSON.
 
-Return ONLY valid JSON.
-
-The JSON must contain exactly these fields:
+Use exactly this structure:
 
 {
   "intent": "string",
@@ -52,30 +49,17 @@ The JSON must contain exactly these fields:
   ]
 }
 
-IMPORTANT RULES:
-
+Rules:
 - Generate exactly 3 responses.
-- The response types must be exactly:
-  1. Enthusiastic Yes
-  2. Professional Refusal
-  3. Negotiation
-- Never invent facts.
-- Never invent dates, times, prices, names, companies,
-  availability, deadlines, locations, or commitments.
-- NEVER claim that the recipient is busy, unavailable,
-  fully booked, available, interested, or has limited
-  availability unless the incoming email explicitly provides
-  that information.
-- NEVER create a reason for accepting or refusing an email.
-- If availability is unknown, ask the sender for their
-  available times instead.
-- A refusal must not invent a reason.
-- A negotiation must not invent constraints.
-- If information is missing, ask the sender for it.
-- Do not claim that the user is available at a particular time.
-- Do not claim that the user has accepted anything.
-- Replies should be natural and professional.
-- Keep each reply useful and context-aware.
+- Use exactly these response types:
+  Enthusiastic Yes
+  Professional Refusal
+  Negotiation
+- Never invent names, dates, prices, times, locations,
+  deadlines, availability, or commitments.
+- Never invent a reason for accepting or refusing.
+- If availability is unknown, ask for available times.
+- Keep replies natural, concise, professional, and useful.
 - Return ONLY JSON.
 """
 
@@ -94,17 +78,44 @@ def analyze_email(email: str):
                 "content": email
             }
         ],
-        temperature=0.4,
-        max_tokens=2000
+        temperature=0.2,
+        max_tokens=2000,
+        reasoning_effort="low"
     )
 
-    raw_response = response.choices[0].message.content
+    choice = response.choices[0]
+
+    # Some reasoning models may put useful output in
+    # reasoning_content instead of message.content.
+    content = choice.message.content
+
+    if not content:
+        reasoning = getattr(choice.message, "reasoning_content", None)
+
+        if reasoning:
+            content = reasoning
+
+    if not content:
+        raise RuntimeError(
+            "NVIDIA returned an empty response. "
+            f"Finish reason: {choice.finish_reason}"
+        )
+
+    # Remove accidental markdown JSON fences
+    content = content.strip()
+
+    if content.startswith("```"):
+        content = content.replace("```json", "", 1)
+        content = content.replace("```", "", 1)
+        content = content.strip()
 
     try:
-        data = json.loads(raw_response)
+        data = json.loads(content)
+
         return AnalysisResponse(**data)
 
     except Exception as e:
         raise RuntimeError(
-            f"AI returned invalid JSON: {e}\n\nAI response:\n{raw_response}"
+            f"AI returned invalid JSON: {e}\n\n"
+            f"AI response:\n{content}"
         )
